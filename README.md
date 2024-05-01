@@ -41,7 +41,7 @@ This project is divided into four main modules, each focusing on a distinct aspe
 
 - *Functionality*: Extract and process handwritten queries using the same logic as Endpoint 1.
 - *Input*: Image file with handwritten text.
-- *Output*: Same output format as Endpoint 1, adapted for image inputs.
+- *Output*: Same output format as Endpoint 1, adapted for image inputs also return the extracted test from OCR.
 
 ## Module 3: CNN Model Development
 
@@ -54,7 +54,7 @@ This project is divided into four main modules, each focusing on a distinct aspe
 
 - *Functionality*: Use the CNN model to identify products from images and match them using the vector database.
 - *Input*: Product image.
-- *Output*: Product description and matching products in a format consistent with other endpoints.
+- *Output*: Product description and matching products in a format consistent with other endpoints. Also return the name of the `class` that you got from CNN model for the particular input image.
 
 ## Module 4: Frontend Development and Integration
 
