@@ -1,0 +1,88 @@
+<!-- templates/results.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Recommendations</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+            padding: 10px;
+            background-color: #ffe6e6;
+            border: 1px solid red;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if response %}
+            <h1>Answer in Natural Language</h1>
+            <p>{{ response }}</p>
+        {% else %}
+            <div class="error">No response generated.</div>
+        {% endif %}
+
+        {% if predicted_class %}
+            <p><strong>Predicted Class:</strong> {{ predicted_class }}</p>
+        {% endif %}
+
+        {% if products %}
+            <h1>Selected Products</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stock Code</th>
+                        <th>Description</th>
+                        <th>Unit Price</th>
+                        <th>Country</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in products %}
+                    <tr>
+                        <td>{{ p.StockCode }}</td>
+                        <td>{{ p.Description }}</td>
+                        <td>${{ "%.2f"|format(p.UnitPrice) }}</td>
+                        <td>{{ p.Country }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="error">No products found.</div>
+        {% endif %}
+    </div>
+</body>
+</html>
