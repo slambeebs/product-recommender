@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 # Load the model
-model = tf.keras.models.load_model("cnn_model.h5")
+model = tf.keras.models.load_model("models/cnn_model.h5")
 
 # Get class names from your folder structure
 class_names = sorted(os.listdir("cnn_data"))

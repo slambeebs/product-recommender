@@ -1,7 +1,7 @@
 import requests
 
 # Path to your image file
-image_path = "WhatsApp Image 2025-02-20 at 01.47.24 (1).jpg"
+image_path = "WhatsApp Image 2025-02-20 at 01.47.24 (1).jpg" #TODO: Replace with your image path
 
 # OCR.space API endpoint
 url = "https://api.ocr.space/parse/image"
