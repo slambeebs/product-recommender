@@ -28,6 +28,11 @@ def validate_images_with_tf(directory: str) -> None:
 def load_datasets(data_dir: str, img_size: Tuple[int, int], batch_size: int):
     """
     Loads training and validation datasets from directory.
+
+    Returns:
+        train_ds: Training dataset.
+        val_ds: Validation dataset.
+        class_names: List of class labels.
     """
     try:
         train_ds = tf.keras.preprocessing.image_dataset_from_directory(

@@ -16,4 +16,4 @@ embeddings = model.encode(descriptions, show_progress_bar=True)
 df["embedding"] = embeddings.tolist()
 
 # Save to file for later use
-df.to_pickle("app/models/vectorized_dataset.pkl")
+df.to_pickle("models/vectorized_dataset.pkl")

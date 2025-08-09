@@ -1,122 +1,151 @@
-# Product Recommendation System
+# Product Recommendation System – Multimodal Search
 
-A multimodal product search system that supports three types of queries:
-
-1. **Text-based Query:** Enter a product description to get relevant suggestions.
-2. **Image-based Query (OCR):** Upload an image with product text; the system extracts text and provides suggestions.
-3. **Image Classification (CNN):** Upload a product image; the system predicts the product and finds similar items.
-
----
-
-## 🚀 Features
-
-- Semantic search with `SentenceTransformer` (MiniLM)
-- OCR via [OCR.space API](https://ocr.space/)
-- CNN model built with TensorFlow for image classification
-- Flask-powered API + Web interface
-- Pandas-powered product DB with vector embeddings
+A production-ready **multimodal product search platform** that supports:  
+1. **Text Search** → Retrieve products based on semantic similarity.  
+2. **Image Search (OCR)** → Extract text from an image and match products.  
+3. **Image Classification (CNN)** → Predict product class from an image and find similar products.
 
 ---
 
-## 🧱 Project Structure
+## 📐 System Architecture
 
-.
-├── app/
-│   ├── __init__.py               # Initializes the Flask app
-│   ├── config/                   # App configuration
-│   │   └── config.py
-│   ├── models/                   # Pretrained models & embeddings
-│   │   ├── cnn_model.h5
-│   │   └── vectorized_dataset.pkl
-│   ├── routes/                   # API endpoints
-│   │   ├── image_search.py
-│   │   ├── ocr_query.py
-│   │   ├── pages.py
-│   │   └── text_search.py
-│   ├── scripts/                  # Training scripts
-│   │   └── train_cnn.py
-│   ├── services/                 # Core logic and ML services
-│   │   ├── __init__.py
-│   │   ├── cnn/
-│   │   │   ├── data_loader.py
-│   │   │   ├── model_builder.py
-│   │   │   └── train.py
-│   │   ├── old_cnn_service.py
-│   │   └── vector_service.py
-│   └── utils/                    # Utility tools and testing scripts
-│       ├── clean_images.py
-│       ├── image_scraper.py
-│       ├── model_tester.py
-│       └── ocr_tester.py
-├── cnn_data/                     # Product images for training/testing
-├── dataset/
-│   ├── clean_dataset.csv
-│   └── CNN_Model_Train_Data.csv
-├── templates/                    # Web UI templates
-│   ├── image_search.html
-│   ├── ocr_query.html
-│   ├── results.html
-│   ├── sample_response.html
-│   └── text_query.html
-├── ARCHITECTURE.md               # System design and architecture
-├── run.py                        # App entry point
-├── requirements.txt              # Python dependencies
-├── structure.txt                 # Project file structure
-└── README.md                     # You are here
+```
+User Request → Flask API → Service Layer → Model Inference → Product Recommendation → Response
+```
+
+**Workflow Diagram:**  
+1. **Text Search** → SentenceTransformer → Vector Matching  
+2. **OCR Search** → OCR.space API → SentenceTransformer → Vector Matching  
+3. **Image Classification** → TensorFlow CNN → Class Prediction → Filter Products  
+
+```
+                         ┌────────────────────┐
+                         │   User Request     │
+                         └─────────┬──────────┘
+                                   │
+         ┌─────────────────────────┼─────────────────────────┐
+         │                         │                         │
+         ▼                         ▼                         ▼
+ ┌─────────────────┐     ┌─────────────────┐       ┌──────────────────────┐
+ │ Text Search     │     │ OCR Query       │       │ Image Classification │
+ │ (Sentence       │     │ (OCR.space API) │       │ (TensorFlow CNN)     │
+ │ Transformer)    │     └───────┬─────────┘       └─────────┬────────────┘
+ └───────┬─────────┘             │                           │
+         │                       │                           │
+         │                       ▼                           ▼
+         │             ┌──────────────────────┐    ┌──────────────────────┐
+         │             │ Extracted Text       │    │ CNN Predicted Class  │
+         │             └─────────┬────────────┘    └──────────┬───────────┘
+         │                       │                            │
+         ▼                       ▼                            ▼
+ ┌─────────────────────┐  ┌──────────────────────┐  ┌──────────────────────┐
+ │Vector Search (SBERT)│  │ Vector Search (SBERT)│  │ Vector Search (SBERT)│
+ │ + Embeddings DB     │  │ + Embeddings DB      │  │ + Embeddings DB      │
+ └────────┬────────────┘  └─────────┬────────────┘  └─────────┬────────────┘
+          │                         │                         │
+          └─────────────────────────┴─────────────────────────┘
+                                    │
+                                    ▼
+                        ┌──────────────────────┐
+                        │   Return Products    │
+                        │  to User (Web/API)   │
+                        └──────────────────────┘
+```
+---
+
+## 🛠 Services
+
+| Service          | Technology Used                           | Purpose |
+|------------------|-------------------------------------------|---------|
+| **Text Search**  | SentenceTransformer (MiniLM)              | Finds semantically similar products |
+| **OCR Service**  | OCR.space API                             | Extracts text from images |
+| **CNN Service**  | TensorFlow/Keras                          | Classifies products by image |
+| **Vector Search**| NumPy cosine similarity                   | Finds nearest products in embedding space |
 
 ---
 
-## 🛠️ Setup
+## 🌐 API Reference
 
-1. Clone the repo
-2. Install dependencies:
+| Endpoint                   | Method | Parameters / Body                              | Response |
+|----------------------------|--------|-----------------------------------------------|----------|
+| `/product-recommendation`  | POST   | `query` (str)                                 | JSON with `response`, `products` |
+| `/ocr-query`               | POST   | `image_data` (file)                           | JSON with `response`, `products` |
+| `/image-product-search`    | POST   | `product_image` (file)                        | JSON with `response`, `products`, `predicted_class` |
+| `/text-query`              | GET/POST | HTML form submission                        | HTML page |
+| `/ocr-query-form`          | GET/POST | HTML form submission                        | HTML page |
+| `/image-search-form`       | GET/POST | HTML form submission                        | HTML page |
+
+---
+
+## ⚙ Workflow
+
+1. **Text Query**  
+   - User inputs product description → Encoded via SentenceTransformer → Compared with stored embeddings → Top matches returned.
+
+2. **OCR Query**  
+   - User uploads image → OCR.space extracts text → Same as Text Query workflow.
+
+3. **Image Classification Query**  
+   - User uploads product image → CNN model predicts class → Products of same class retrieved.
+
+---
+
+## 📂 Project Structure
+
+```
+project/
+├── app/                    # Main Flask application package
+│   ├── routes/             # API and UI endpoints (Flask Blueprints)
+│   ├── templates/          # HTML templates for web interface
+│   ├── __init__.py         # App factory, model loading, blueprint registration
+├── cnn-data/               # Raw and processed images for CNN model training
+├── config/                 # Configuration files (API keys, environment settings)
+├── dataset/                # CSVs and datasets for embeddings & CNN
+├── models/                 # Trained models (.h5 for CNN, .pkl for embeddings)
+├── notebooks/              # Experiment notebooks:
+│   ├── 01_data_exploration.ipynb – Dataset inspection & sample visualizations
+│   ├── 02_cnn_training_experiments.ipynb – CNN model training & accuracy plots
+│   └── 03_model_evaluation.ipynb – Model testing & confusion matrix
+├── scripts/                # Scripts for training and preprocessing
+├── services/               # Core service logic (OCR, CNN inference, vector search)
+├── utils/                  # Helper scripts (data cleaning, testing, scraping)
+├── run.py                  # Application entry point
+├── requirements.txt        # Python dependencies
+├── ARCHITECTURE.md         # System design and architecture documentation
+├── README.md               # Project documentation
+└── structure.txt           # Project file tree
+```
+
+---
+
+## 💻 Setup & Run
 
 ```bash
+git clone <repo-url>
+cd product-recommendation
 pip install -r requirements.txt
+python run.py
 ```
-
-3. Download / prepare data:
-   - `cnn_data/`: Directory of labeled product images (for CNN)
-   - `vectorized_dataset.pkl`: Embedding-based product dataset
-
-4. Run the app:
-
-```bash
-python app.py
-```
-
----
-
-## 🔍 Example Usage
-
-**Text Query:**  
-`"white porcelain mug"` → returns 5 most similar products.
-
-**OCR Image Query:**  
-Upload a label/product image → Text is extracted → Matches are returned.
-
-**Product Image Query:**  
-Upload an image of the product → CNN predicts class → Relevant product(s) returned.
-
 ---
 
 ## 📦 Dependencies
 
-- Flask
-- TensorFlow / Keras
-- SentenceTransformers
-- scikit-learn
-- numpy, pandas, Pillow
-- OCR.space API
+- Flask  
+- TensorFlow / tf.keras  
+- SentenceTransformers  
+- Pandas, NumPy, Pillow  
+- Requests (OCR.space API)  
 
 ---
 
 ## 🧠 Model Training
 
-Run `cnn_train.py` to retrain the image classification model.
+Run:
+```bash
+python training/train_cnn.py
+```
 
 ---
 
 ## 👤 Author
-
-Developed by Abdul Salam
+Abdul Salam

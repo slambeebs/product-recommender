@@ -1,31 +1,17 @@
 .
 ├── app
 │   ├── __init__.py
-│   ├── config
-│   │   └── config.py
-│   ├── models
-│   │   ├── cnn_model.h5
-│   │   └── vectorized_dataset.pkl
 │   ├── routes
 │   │   ├── image_search.py
 │   │   ├── ocr_query.py
 │   │   ├── pages.py
 │   │   └── text_search.py
-│   ├── scripts
-│   │   └── train_cnn.py
-│   ├── services
-│   │   ├── __init__py
-│   │   ├── cnn
-│   │   │   ├── data_loader.py
-│   │   │   ├── model_builder.py
-│   │   │   └── train.py
-│   │   ├── old_cnn_service.py
-│   │   └── vector_service.py
-│   └── utils
-│       ├── clean_images.py
-│       ├── image_scraper.py
-│       ├── model_tester.py
-│       └── ocr_tester.py
+│   └── templates
+│       ├── image_search.html
+│       ├── ocr_query.html
+│       ├── results.html
+│       ├── sample_response.html
+│       └── text_query.html
 ├── ARCHITECTURE.md
 ├── cnn_data
 │   ├── 20726
@@ -324,18 +310,30 @@
 │       ├── 000028.jpg
 │       ├── 000029.jpg
 │       └── 000030.jpg
+├── config
+│   └── config.py
 ├── dataset
 │   ├── clean_dataset.csv
 │   └── CNN_Model_Train_Data.csv
+├── models
+│   ├── cnn_model.h5
+│   └── vectorized_dataset.pkl
 ├── README.md
 ├── requirements.txt
 ├── run.py
+├── scripts
+│   └── train_cnn.py
+├── services
+│   ├── cnn
+│   │   ├── data_loader.py
+│   │   ├── model_builder.py
+│   │   └── train.py
+│   └── vector_service.py
 ├── structure.txt
-└── templates
-    ├── image_search.html
-    ├── ocr_query.html
-    ├── results.html
-    ├── sample_response.html
-    └── text_query.html
+└── utils
+    ├── clean_images.py
+    ├── image_scraper.py
+    ├── model_tester.py
+    └── ocr_tester.py
 
-22 directories, 317 files
+22 directories, 315 files

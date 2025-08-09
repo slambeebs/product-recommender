@@ -8,10 +8,10 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from tf_keras.models import load_model
 
-df = pd.read_pickle("app/models/vectorized_dataset.pkl")
+df = pd.read_pickle("models/vectorized_dataset.pkl")
 embeddings_matrix = np.vstack(df['embedding'].values)
 sentence_model = SentenceTransformer("all-MiniLM-L6-v2")
-cnn_model = load_model("app/models/cnn_model.h5")
+cnn_model = load_model("models/cnn_model.h5")
 class_labels = ['20726', '21034', '21931', '22077', '22112', '22139', '22384', '22423', '22727', '23298']
 
 def create_app():
